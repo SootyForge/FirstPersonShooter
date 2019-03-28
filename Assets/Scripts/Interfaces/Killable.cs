@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Pistol : Weapon
+public interface IKillable
 {
-    
+    void Kill();
+    void TakeDamage(int damage);
 }
