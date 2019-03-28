@@ -83,12 +83,11 @@ public class Player : MonoBehaviour, IKillable
     {
         controller = GetComponent<CharacterController>();
         anim = GetComponent<Animator>();
-
         CreateUI();
-        RegisterWeapons();
     }
     void Start()
     {
+        RegisterWeapons();
         // Select current weapon at start
         SelectWeapon(0);
     }
@@ -100,6 +99,10 @@ public class Player : MonoBehaviour, IKillable
     void RegisterWeapons()
     {
         weapons = new List<Weapon>(GetComponentsInChildren<Weapon>());
+        foreach (Weapon weapon in weapons)
+        {
+            weapon.Pickup();
+        }
     }
     #endregion
 
@@ -123,21 +126,62 @@ public class Player : MonoBehaviour, IKillable
     }
     #endregion
 
+    void AttachWeapon(Weapon weaponToAttach)
+    {
+        // Call Pickup on the weapon
+        weaponToAttach.Pickup();
+        // Get transform
+        Transform weaponTranform = weaponToAttach.transform;
+        // Attach weapon to hand
+        weaponTranform.SetParent(hand);
+        // Zero rotation and position
+        weaponTranform.localRotation = Quaternion.identity;
+        weaponTranform.localPosition = Vector3.zero;
+    }
+    void DetachWeapon(Weapon weaponToDetach)
+    {
+        // Drop weapon
+        weaponToDetach.Drop();
+        // Get the transform
+        Transform weaponTransform = weaponToDetach.transform;
+        weaponTransform.SetParent(null);
+    }
+
     #region Combat
     /// <summary>
     /// Switches between weapons with given direction
     /// </summary>
     /// <param name="direction">-1 to 1 number for list selection</param>
-    void SwitchWeapons(int direction)
+    void SwitchWeapon(int direction)
     {
-
+        // Offset weapon index with direction
+        currentWeaponIndex += direction;
+        // Check if index is below zero
+        if (currentWeaponIndex < 0)
+        {
+            // Loop back to end
+            currentWeaponIndex = weapons.Count - 1;
+        }
+        // Check if index is exceeding length
+        if (currentWeaponIndex >= weapons.Count)
+        {
+            // Reset back to zero
+            currentWeaponIndex = 0;
+        }
+        // Select weapon
+        SelectWeapon(currentWeaponIndex);
     }
     /// <summary>
     /// Disables GameObjects of every attached weapon
     /// </summary>
     void DisableAllWeapons()
     {
-
+        // Loop through all weapons
+        foreach (Weapon item in weapons)
+        {
+            // Deactivate it!
+            item.gameObject.SetActive(false);
+        }
     }
     /// <summary>
     /// Adds weapon to list and attaches to player's hand
@@ -145,7 +189,11 @@ public class Player : MonoBehaviour, IKillable
     /// <param name="weaponToPickup">Weapon to place in Hand</param>
     void Pickup(Weapon weaponToPickup)
     {
-
+        AttachWeapon(weaponToPickup);
+        // Add to list
+        weapons.Add(weaponToPickup);
+        // Select new weapon
+        SelectWeapon(weapons.Count - 1);
     }
     /// <summary>
     /// Removes weapon to list and removes from player's hand
@@ -153,7 +201,13 @@ public class Player : MonoBehaviour, IKillable
     /// <param name="weaponToDrop">Weapon to remove from hand</param>
     void Drop(Weapon weaponToDrop)
     {
-
+        // Drop weapon
+        weaponToDrop.Drop();
+        // Get the transform
+        Transform weaponTransform = weaponToDrop.transform;
+        weaponTransform.SetParent(null);
+        // Remove weapon from list
+        weapons.Remove(weaponToDrop);
     }
     /// <summary>
     /// Sets currentWeapon to weapon at given index
@@ -161,7 +215,18 @@ public class Player : MonoBehaviour, IKillable
     /// <param name="index">Weapon Index</param>
     void SelectWeapon(int index)
     {
-
+        // Is index in range?
+        if (index >= 0 && index < weapons.Count)
+        {
+            // Disable all weapons
+            DisableAllWeapons();
+            // Select weapon
+            currentWeapon = weapons[index];
+            // Enable the current weapon (using index)
+            currentWeapon.gameObject.SetActive(true);
+            // Update the current index
+            currentWeaponIndex = index;
+        }
     }
     #endregion
     
@@ -254,14 +319,37 @@ public class Player : MonoBehaviour, IKillable
     /// </summary>
     void Shooting()
     {
-
+        // Is a current weapon selected
+        if (currentWeapon)
+        {
+            // Is the fire button pressed?
+            if (Input.GetButton("Fire1"))
+            {
+                // Shoot the current weapon
+                currentWeapon.Shoot();
+            }
+        }
     }
     /// <summary>
     /// Cycling through available weapons
     /// </summary>
     void Switching()
     {
-
+        // If there is more than one weapon
+        if (weapons.Count > 1)
+        {
+            float inputScroll = Input.GetAxis("Mouse ScrollWheel");
+            // If scroll input has been made
+            if (inputScroll != 0)
+            {
+                int direction = inputScroll > 0 ?
+                                    Mathf.CeilToInt(inputScroll)
+                                :
+                                    Mathf.FloorToInt(inputScroll);
+                // Switch Weapons up or down
+                SwitchWeapon(direction);
+            }
+        }
     }
     #endregion
 
