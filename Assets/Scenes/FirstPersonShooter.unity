@@ -99,7 +99,7 @@ NavMeshSettings:
   m_BuildSettings:
     serializedVersion: 2
     agentTypeID: 0
-    agentRadius: 0.5
+    agentRadius: 0.625
     agentHeight: 2
     agentSlope: 45
     agentClimb: 0.4
@@ -107,13 +107,13 @@ NavMeshSettings:
     maxJumpAcrossDistance: 0
     minRegionArea: 2
     manualCellSize: 0
-    cellSize: 0.16666667
+    cellSize: 0.20833333
     manualTileSize: 0
     tileSize: 256
     accuratePlacement: 0
     debug:
       m_Flags: 0
-  m_NavMeshData: {fileID: 0}
+  m_NavMeshData: {fileID: 23800000, guid: 3107671a96a3a7e4d8df5407ad548162, type: 2}
 --- !u!1 &7556215
 GameObject:
   m_ObjectHideFlags: 0
@@ -508,8 +508,8 @@ Transform:
   m_Children:
   - {fileID: 1303113989}
   - {fileID: 7556220}
-  - {fileID: 947421041}
   - {fileID: 260342416}
+  - {fileID: 947421041}
   m_Father: {fileID: 1449742227}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -934,7 +934,7 @@ GameObject:
   - component: {fileID: 260342418}
   - component: {fileID: 260342417}
   m_Layer: 0
-  m_Name: Cube_Bridge_N (1)
+  m_Name: Cube_Bridge_S
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -951,7 +951,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 96296733}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!64 &260342417
 MeshCollider:
@@ -4984,6 +4984,11 @@ Prefab:
       propertyPath: interactUIParent
       value: 
       objectReference: {fileID: 1899960425}
+    - target: {fileID: 114959527106160284, guid: a2dc39a4a0a021149b652bc6f466c9b9,
+        type: 2}
+      propertyPath: attachedCamera
+      value: 
+      objectReference: {fileID: 1818899460}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a2dc39a4a0a021149b652bc6f466c9b9, type: 2}
   m_IsPrefabAsset: 0
@@ -15770,7 +15775,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 96296733}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!64 &947421042
 MeshCollider:
@@ -19876,7 +19881,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1129907134
 Transform:
   m_ObjectHideFlags: 0
@@ -27345,7 +27350,7 @@ MonoBehaviour:
   range: 10
   shootRate: 0.2
   lineDelay: 0.1
-  shotOrigin: {fileID: 0}
+  shotOrigin: {fileID: 1676979238}
 --- !u!54 &1644326072
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -28121,6 +28126,11 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!20 &1818899460 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 20222074559527874, guid: a2dc39a4a0a021149b652bc6f466c9b9,
+    type: 2}
+  m_PrefabInternal: {fileID: 360048217}
 --- !u!1 &1899960424
 GameObject:
   m_ObjectHideFlags: 0

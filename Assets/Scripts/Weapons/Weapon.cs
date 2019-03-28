@@ -92,6 +92,10 @@ public class Weapon : MonoBehaviour, IInteractable
         // Enable rigidbody
         rigid.isKinematic = false;
     }
+    public string GetTitle()
+    {
+        return "Weapon";
+    }
 
     IEnumerator ShowLine(Ray bulletRay, float lineDelay)
     {

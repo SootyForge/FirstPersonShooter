@@ -4,6 +4,7 @@ using UnityEngine;
 
 public interface IInteractable
 {
+    string GetTitle();
     void Pickup();
     void Drop();
 }

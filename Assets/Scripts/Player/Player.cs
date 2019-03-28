@@ -62,10 +62,20 @@ public class Player : MonoBehaviour, IKillable
     }
     */
 
-    void OnDrawGizmos()
+    void DrawRay (Ray ray, float distance)
     {
+        Gizmos.DrawLine(ray.origin, ray.origin + ray.direction * interactRange);
+    }
+
+    void OnDrawGizmosSelected()
+    {
+        Ray interactRay = attachedCamera.ViewportPointToRay(new Vector2(.5f, .5f));
+        Gizmos.color = Color.blue;
+        DrawRay(interactRay, interactRange);
+
+        Gizmos.color = Color.red;
         Ray groundRay = new Ray(transform.position, -transform.up);
-        Gizmos.DrawLine(groundRay.origin, groundRay.origin + groundRay.direction * groundRayDistance);
+        DrawRay(groundRay, groundRayDistance);
     }
 
     #region Initialisation
@@ -73,6 +83,9 @@ public class Player : MonoBehaviour, IKillable
     {
         controller = GetComponent<CharacterController>();
         anim = GetComponent<Animator>();
+
+        CreateUI();
+        RegisterWeapons();
     }
     void Start()
     {
@@ -86,7 +99,7 @@ public class Player : MonoBehaviour, IKillable
     }
     void RegisterWeapons()
     {
-
+        weapons = new List<Weapon>(GetComponentsInChildren<Weapon>());
     }
     #endregion
 
@@ -190,6 +203,7 @@ public class Player : MonoBehaviour, IKillable
                 jumps++;
             }
         }
+        
         // Apply gravity
         movement.y -= gravity * Time.deltaTime;
         // Limit the gravity
@@ -202,6 +216,37 @@ public class Player : MonoBehaviour, IKillable
     /// </summary>
     void Interact()
     {
+        // Disable interact UI
+        interactUI.SetActive(false);
+        
+        // Create ray from centre of screen
+        Ray interactRay = attachedCamera.ViewportPointToRay(new Vector2(0.5f, 0.5f));
+        RaycastHit hit;
+        // Shoot ray in a range
+        if (Physics.Raycast(interactRay, out hit, interactRange))
+        {
+            // Try getting IInteractable Object
+            IInteractable interact = hit.collider.GetComponent<IInteractable>();
+            // Is Interactable
+            if (interact != null)
+            {
+                // Enable the UI
+                interactUI.SetActive(true);
+                // Change the text to item's title
+                interactText.text = interact.GetTitle();
+                // Get input from user
+                if (Input.GetKeyDown(KeyCode.E))
+                {
+                    // Check if the thing we hit is a weapon (now that we know it's an interactable)
+                    Weapon weapon = hit.collider.GetComponent<Weapon>();
+                    if (weapon)
+                    {
+                        // Pick it up!
+                        Pickup(weapon);
+                    } 
+                }
+            }
+        }
 
     }
     /// <summary>
